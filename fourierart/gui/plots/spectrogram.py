@@ -1,5 +1,4 @@
-from fourierart import ApplicationSettings, WindowFunction, get_spectrogram
-from fourierart.gui.plots import PlotProperties
+from fourierart import PlotProperties, ApplicationSettings, get_spectrogram
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure

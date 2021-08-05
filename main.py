@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget
 
-from fourierart.utility import get_dark_palette
+from fourierart import Palette
 from fourierart.gui.tabs import *
 
 class MainContents(QTabWidget):
@@ -77,9 +77,7 @@ if __name__ == '__main__':
     app = QApplication([])
     
     app.setStyle("Fusion")
-
-    palette = get_dark_palette()
-    app.setPalette(palette)
+    app.setPalette(Palette.dark)
 
     ex = App()
 

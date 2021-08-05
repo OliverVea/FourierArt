@@ -1,9 +1,17 @@
 from fourierart.gui.primitives import *
-from fourierart.gui.plots import PlotProperties
 
 from fourierart.utility import *
 from fourierart.audio.audio_file import AudioFile
 from fourierart.audio.processing import WindowFunction, Filter, get_spectrogram
+
+import matplotlib
+matplotlib.use('Qt5Agg')
+matplotlib.rc('axes',edgecolor='w')
+
+class PlotProperties:
+    background_color = (53/255, 53/255, 53/255)
+    primary_color = 'white'
+    accent_color = 'orange'
 
 class ApplicationSettings:
 
@@ -29,3 +37,19 @@ class ApplicationSettings:
     sg_default_window_size = 1024
     sg_default_step_size = 64
     sg_default_window_function = WindowFunction.Hanning
+
+class Palette:
+    dark = QPalette()
+    dark.setColor(QPalette.Window, QColor(53, 53, 53))
+    dark.setColor(QPalette.WindowText, Qt.white)
+    dark.setColor(QPalette.Base, QColor(25, 25, 25))
+    dark.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    dark.setColor(QPalette.ToolTipBase, Qt.black)
+    dark.setColor(QPalette.ToolTipText, Qt.white)
+    dark.setColor(QPalette.Text, Qt.white)
+    dark.setColor(QPalette.Button, QColor(53, 53, 53))
+    dark.setColor(QPalette.ButtonText, Qt.white)
+    dark.setColor(QPalette.BrightText, Qt.red)
+    dark.setColor(QPalette.Link, QColor(42, 130, 218))
+    dark.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    dark.setColor(QPalette.HighlightedText, Qt.black)
