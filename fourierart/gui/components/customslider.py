@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGroupBox, QHBoxLayout, QSlider
 
 
-class OptionSlider(QGroupBox):
+class CustomSlider(QGroupBox):
     def __init__(self, title, parameter: Parameter, interpolator: str = 'lin', interpolator_order: float = 50, input_width: int = 80):
         super().__init__()
 
@@ -30,6 +30,7 @@ class OptionSlider(QGroupBox):
         self.input = CustomField('')
         self.input.setFixedWidth(input_width)
         self.input.returnPressed.connect(self.on_input_change)
+        
         self.layout.addWidget(self.input)
 
 

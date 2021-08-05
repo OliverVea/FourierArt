@@ -30,6 +30,7 @@ class CustomRange(QGroupBox):
         self.input = CustomField('')
         self.input.setFixedWidth(input_width)
         self.input.returnPressed.connect(self.on_input_change)
+        
         self.layout.addWidget(self.input)
 
 
