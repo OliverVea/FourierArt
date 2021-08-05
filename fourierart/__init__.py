@@ -1,4 +1,4 @@
-from fourierart.gui import *
+from fourierart.gui.primitives import *
 
 from fourierart.utility import *
 from fourierart.audio_file import AudioFile
