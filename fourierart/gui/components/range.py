@@ -11,7 +11,7 @@ class CustomRange(QGroupBox):
 
         # Initializing attributes
         self.interpolator = ParameterInterpolator(parameter=range, interpolator=interpolator, interpolator_order=interpolator_order)
-        self.callback = Nop # CustomRange and CustomSlider do not pass the value on callback. This has to be read from CustomRange.range or CustomSlider.parameter.
+        self.callback = Callback() # CustomRange and CustomSlider do not pass the value on callback. This has to be read from CustomRange.range or CustomSlider.parameter.
 
         # Layout
         self.setTitle(title)
@@ -22,24 +22,24 @@ class CustomRange(QGroupBox):
         self.slider = QRangeSlider(Qt.Vertical) # TODO: Implement Horizontal.
         slider_value = tuple(self.interpolator.to_slider(v) for v in self.p.get())
         self.update_parameter(slider_value)
-        self.slider.sliderMoved.connect(self.on_slider_change)
+        self.slider.sliderMoved.connect(self._on_slider_change)
 
         self.layout.addWidget(self.slider)
 
         # Input field
         self.input = CustomField('')
         self.input.setFixedWidth(input_width)
-        self.input.returnPressed.connect(self.on_input_change)
+        self.input.returnPressed.connect(self._on_input_change)
         
         self.layout.addWidget(self.input)
 
 
-    def on_slider_change(self, value):
+    def _on_slider_change(self, value):
         raise Exception('Not implemented.')
 
         self.callback()
 
-    def on_input_change(self):
+    def _on_input_change(self):
         raise Exception('Not implemented.')
 
         self.callback()

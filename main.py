@@ -34,7 +34,7 @@ class MainContents(QTabWidget):
         self.select_source = SelectSource(enable_tab=lambda: self.enable_tab(1))
         self.addTab(self.select_source, 'Select Source')
 
-        self.waveform = Waveform(enable_tab=lambda: self.enable_tab(2))
+        self.waveform = Waveform(completion_callback=lambda: self.enable_tab(2))
         self.addTab(self.waveform, 'Waveform')
 
         self.spectrogram = Spectrogram()

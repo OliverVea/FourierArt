@@ -24,7 +24,7 @@ class Waveform(CustomTab):
         self.graph_layout.addWidget(self.waveform_plot)
 
         # Options
-        self.gain = CustomSlider('Gain', self.parameters['gain'])
+        self.gain = CustomSlider('Gain', self.parameters['gain'],)
         self.gain.connect(lambda v: self.set_parameter('gain', v))
         self.options_layout.addWidget(self.gain, 0, 0, 1, 2)
 
@@ -32,11 +32,11 @@ class Waveform(CustomTab):
         self.time_step.connect(lambda v: self.set_parameter('time_step', v))
         self.options_layout.addWidget(self.time_step, 0, 2, 1, 2)
 
-        self.normalization_type = CustomChoice(Choice('Normalization', {'Max': 'max', 'Peak': 'peak'}))
+        self.normalization_type = CustomChoice('Normalization', Choice({'Max': 'max', 'Peak': 'peak'}))
         self.normalization_type.connect(lambda v: self.set_parameter('normalization', v))
         self.options_layout.addWidget(self.normalization_type, 1, 0)
 
-        self.bar_method = CustomChoice('Bar Method', {'Max': np.max, 'Min': np.min, 'Average': np.average, 'Median': np.median})
+        self.bar_method = CustomChoice('Bar Method', Choice({'Max': np.max, 'Min': np.min, 'Average': np.average, 'Median': np.median}))
         self.bar_method.connect(lambda v: self.set_parameter('bar_method', v))
         self.options_layout.addWidget(self.bar_method, 1, 1)
 

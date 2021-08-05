@@ -1,35 +1,26 @@
-import numpy as np
-from fourierart.gui.primitives import Parameter, QCustomRange
-
+from fourierart import Parameter
+from fourierart.gui.components import CustomTab, CustomRange
 from fourierart.gui.plots.spectrogram import SpectrogramPlot
+
+import numpy as np
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QWidget
 
-class Spectrogram(QWidget):
+class Spectrogram(CustomTab):
     def __init__(self):
-        super(QWidget, self).__init__()
+        super().__init__()
         
         self.parameters = {
             'frequency': Parameter(min=0, max=1, value=(0,1), step=1, hard_min=True, hard_max=True, format=lambda v: f'{v[0]:.1f} Hz'),
         }
 
-        # Main layout
-        self.layout = QVBoxLayout()
-
         # Plot
         self.plot = SpectrogramPlot()
-        self.layout.addWidget(self.plot)
-
-        # Options
-        self.options_layout = QGridLayout()
+        self.graph_layout.addWidget(self.plot)
 
         # Frequency slider
-        self.frequency_slider = QCustomRange('Frequency Band', self.parameters['frequency'], interpolator='log')
-        #self.frequency_slider.connect(lambda v: )
-
-        self.setLayout(self.layout)
+        self.frequency_slider = CustomRange('Frequency Band', self.parameters['frequency'], interpolator='log')
 
     def set_audio_segment(self, audio_file):
-
         if self.audio_file == None or audio_file.path != self.audio_file.path or audio_file.t != self.audio_file.t:
             self.audio_file = audio_file
 
