@@ -1,10 +1,9 @@
+from fourierart import db_to_lin, PlotProperties
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-import numpy as np
 
-from fourierart import AudioFile, PlotProperties, db_to_lin
-
-class AudioFileOverview(FigureCanvasQTAgg):
+class AmplitudePlot(FigureCanvasQTAgg):
     def __init__(self):
         fig = Figure(edgecolor=PlotProperties.primary_color, facecolor=PlotProperties.background_color)
         self.axes = fig.add_subplot(111, facecolor=PlotProperties.background_color)
@@ -30,15 +29,6 @@ class AudioFileOverview(FigureCanvasQTAgg):
 
         self.axes.set_ylim(-1, 1)
 
-        self.lines = self.axes.plot([], [], color=PlotProperties.accent_color, zorder=-1)
-
         fig.tight_layout()
-        super(AudioFileOverview, self).__init__(fig)
 
-    def set_audio(self, audio_file: AudioFile, start: float = 0, end: int = 1): 
-        t, y = audio_file.get_amplitudes(start, end, use_downscaling=True, return_time=True)
-
-        self.axes.set_xlim(np.min(t), np.max(t))
-
-        self.lines[0].set_data(t, y)
-        self.draw()
+        super().__init__(fig)

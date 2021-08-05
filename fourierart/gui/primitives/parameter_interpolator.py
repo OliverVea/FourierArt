@@ -1,5 +1,3 @@
-from fourierart.gui.primitives.parameter import Parameter
-
 import numpy as np
 
 class ParameterInterpolator():
@@ -7,7 +5,7 @@ class ParameterInterpolator():
     exp = lambda self, v: (np.power(self.interpolator_order, v) - 1) / (self.interpolator_order - 1)
     log = lambda self, v: np.log(v * (self.interpolator_order - 1) + 1) / np.log(self.interpolator_order)
 
-    def __init__(self, parameter: Parameter, interpolator: str = 'lin', interpolator_order: int = 50):
+    def __init__(self, parameter, interpolator: str = 'lin', interpolator_order: int = 50):
         self.p = parameter
         self.interpolator = interpolator
         self.interpolator_order = interpolator_order

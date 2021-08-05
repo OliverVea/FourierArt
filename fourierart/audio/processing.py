@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pydub.audio_segment import AudioSegment
 
 from scipy.signal import butter, sosfiltfilt, sosfreqz
+from scipy.signal.signaltools import resample
 
 class WindowFunction:
     Blackman = 1
@@ -109,3 +111,22 @@ def get_spectrogram(audio, window_width, window_function: int = None, step_size:
     x = np.array([i * step_size for i in range(n_steps)])
 
     return np.array(spectrogram), x, y
+
+def downsample(audio_segment: AudioSegment, num, method: str = 'resample', resample_threshold: int = 1e5):
+    arr = np.array(audio_segment.get_array_of_samples())
+
+    if len(arr) > resample_threshold:
+        indeces = np.linspace(0, len(arr) - 1, num, dtype=np.int32)
+        return arr[indeces]
+
+    downsample_factor = num / len(arr)
+
+    if method == 'set_frame_rate':
+        fs = audio_segment.frame_rate
+        audio = audio_segment.set_frame_rate(int(fs * downsample_factor))
+        return np.array(audio.get_array_of_samples())
+
+    if method == 'resample':
+        return resample(arr, num)
+
+    raise Exception(f'method "{method}" not understood. please use one of the implemented methods. (\'set_frame_rate\' or \'resample\')')

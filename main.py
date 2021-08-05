@@ -20,8 +20,8 @@ class MainContents(QTabWidget):
 
         if index == 1:
             audio_segment = self.select_source.get_audio_segment()
-            audio_file = AudioFile(audio_segment=audio_segment)
-            self.waveform.set_audio(audio_file)
+            audio_file = AudioFile(audio_segment)
+            self.quantization.set_audio(audio_file)
 
         if index == 2:
             audio_segment = self.select_source.get_audio_segment()
@@ -31,11 +31,11 @@ class MainContents(QTabWidget):
         self.setTabVisible(tab, True)
 
     def init(self):
-        self.select_source = SelectSource(enable_tab=lambda: self.enable_tab(1))
+        self.select_source = AudioSource(enable_tab=lambda: self.enable_tab(1))
         self.addTab(self.select_source, 'Select Source')
 
-        self.waveform = Waveform(completion_callback=lambda: self.enable_tab(2))
-        self.addTab(self.waveform, 'Waveform')
+        self.quantization = Quantization(completion_callback=lambda: self.enable_tab(2))
+        self.addTab(self.quantization, 'Quantization')
 
         self.spectrogram = Spectrogram()
         self.addTab(self.spectrogram, 'Spectrogram')

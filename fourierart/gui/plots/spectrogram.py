@@ -1,11 +1,10 @@
+from fourierart import WindowFunction, get_spectrogram
+from fourierart.gui.plots import PlotProperties
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.colors import LogNorm
 import matplotlib.pyplot as plt
-
-from fourierart.gui.plots.plot_properties import PlotProperties
-from fourierart.audio_processing import WindowFunction, get_spectrogram
-
 import numpy as np
 
 class SpectrogramPlot(FigureCanvasQTAgg):

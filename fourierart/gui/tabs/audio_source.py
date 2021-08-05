@@ -5,7 +5,7 @@ from qtrangeslider import QRangeSlider
 
 from os.path import basename
 
-from fourierart.audio_file import AudioFile
+from fourierart.audio.audio_file import AudioFile
 from fourierart.utility import get_file_name
 from fourierart.gui.plots.audio_file_overview import AudioFileOverview
 
@@ -70,8 +70,7 @@ class BrowseAudio(QWidget):
 
         self.box.setText(file)
 
-        self.audio_file = AudioFile(file)
-        self.audio_file.audio_segment = self.audio_file.audio_segment.set_channels(1)
+        self.audio_file = AudioFile.from_file(file)
 
         self.graph_view.set_audio(self.audio_file)
 
@@ -79,8 +78,8 @@ class BrowseAudio(QWidget):
             basename(file), 
             f'{self.audio_file.fs:,} Hz', 
             f'{self.audio_file.t:.1f} s', 
-            self.audio_file.channels, 
-            f'{self.audio_file.sample_width * 8} bit'
+            self.audio_file.c, 
+            f'{self.audio_file.w * 8} bit'
         )
 
         self.time_selection_bar.setMaximum(self.audio_file.n)
@@ -94,56 +93,7 @@ class BrowseAudio(QWidget):
         
         self.graph_view.set_audio(self.audio_file, start, end)
 
-class SelectSource(QWidget):
-
-    def get_audio_segment(self):
-        start, end = self.read_range_bars()
-
-        t = self.browse_audio.audio_file.t * 1000
-        t_start, t_end = int(t * start), int(t * end)
-
-        return self.browse_audio.audio_file.audio_segment[t_start:t_end]
-
-    def on_click_play(self, state):
-        audio_segment = self.get_audio_segment()
-
-        audio_segment = audio_segment.set_frame_rate(44100)
-        audio_segment = audio_segment.set_sample_width(2)
-
-        play(audio_segment)
-
-    def read_range_bars(self):
-        n = self.browse_audio.audio_file.n
-
-        a_min, a_max = self.time_selection_bar_A.value()
-        b_min, b_max = self.time_selection_bar_B.value()
-
-        a_min, a_max = a_min / n, a_max / n
-        b_min, b_max = b_min / self.bar_b_max, b_max / self.bar_b_max
-
-        start, end = (a_max - a_min) * b_min + a_min, (a_max - a_min) * b_max + a_min
-
-        return (start, end)
-
-
-    def on_slider_change(self, value):
-        # Check if audio file is even loaded
-        if not self.browse_audio or not self.browse_audio.audio_file:
-            return
-
-        a_min, a_max = self.time_selection_bar_A.value()
-        b_min, b_max = self.time_selection_bar_B.value()
-
-        if abs(a_max - a_min) < 10:
-            return
-
-        if abs(b_max - b_min) < 10:
-            return
-        
-        start, end = self.read_range_bars()
-
-        self.browse_audio.set_time(start, end)
-
+class AudioSource(QWidget):
     def __init__(self, enable_tab, bar_b_max: int = 1000):
         super(QWidget, self).__init__()
 
@@ -195,3 +145,51 @@ class SelectSource(QWidget):
         self.layout.addWidget(self.source_tab)
 
         self.setLayout(self.layout)
+
+    def get_audio_segment(self):
+        start, end = self.read_range_bars()
+
+        t = self.browse_audio.audio_file.t * 1000
+        t_start, t_end = int(t * start), int(t * end)
+
+        return self.browse_audio.audio_file.audio_segment[t_start:t_end]
+
+    def on_click_play(self, state):
+        audio_segment = self.get_audio_segment()
+
+        audio_segment = audio_segment.set_frame_rate(44100)
+        audio_segment = audio_segment.set_sample_width(2)
+
+        play(audio_segment)
+
+    def read_range_bars(self):
+        n = self.browse_audio.audio_file.n
+
+        a_min, a_max = self.time_selection_bar_A.value()
+        b_min, b_max = self.time_selection_bar_B.value()
+
+        a_min, a_max = a_min / n, a_max / n
+        b_min, b_max = b_min / self.bar_b_max, b_max / self.bar_b_max
+
+        start, end = (a_max - a_min) * b_min + a_min, (a_max - a_min) * b_max + a_min
+
+        return (start, end)
+
+
+    def on_slider_change(self, value):
+        # Check if audio file is even loaded
+        if not self.browse_audio or not self.browse_audio.audio_file:
+            return
+
+        a_min, a_max = self.time_selection_bar_A.value()
+        b_min, b_max = self.time_selection_bar_B.value()
+
+        if abs(a_max - a_min) < 10:
+            return
+
+        if abs(b_max - b_min) < 10:
+            return
+        
+        start, end = self.read_range_bars()
+
+        self.browse_audio.set_time(start, end)

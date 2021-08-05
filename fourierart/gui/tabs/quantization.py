@@ -1,11 +1,11 @@
 from fourierart.gui.primitives.callback import Callback
 from fourierart import Parameter, Choice, Nop, db_to_lin
 from fourierart.gui.components import CustomSlider, CustomChoice, CustomTab
-from fourierart.gui.plots.waveform import WaveformPlot
+from fourierart.gui.plots.quantization import QuantizationPlot
 
 import numpy as np
 
-class Waveform(CustomTab):
+class Quantization(CustomTab):
 
     def __init__(self, completion_callback: Callback = Callback(), time_step_min: float = 0.001, time_step_default: float = 0.02):
         super().__init__(completion_callback=completion_callback)
@@ -21,8 +21,8 @@ class Waveform(CustomTab):
             'bar_method': Choice({'Max': np.max, 'Min': np.min, 'Average': np.average, 'Median': np.median}),
         }
 
-        self.waveform_plot = WaveformPlot()
-        self.graph_layout.addWidget(self.waveform_plot)
+        self.plot = QuantizationPlot()
+        self.graph_layout.addWidget(self.plot)
 
         # Options
         self.gain = CustomSlider('Gain', self.parameters['gain'])
@@ -54,7 +54,7 @@ class Waveform(CustomTab):
         self.update_graph()
 
     def update_graph(self):
-        self.spline = self.waveform_plot.set_data(
+        self.spline = self.plot.set_data(
             audio_file = self.audio_file,
             gain = db_to_lin(self.parameters['gain'].get()),
             time_step = self.parameters['time_step'].get(),
