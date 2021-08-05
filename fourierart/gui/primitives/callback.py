@@ -1,5 +1,5 @@
 class Callback():
-    def __init__(self, callbacks: set = []):
+    def __init__(self, callbacks: set = set()):
         self.callbacks = callbacks
 
     def register(self, callback):

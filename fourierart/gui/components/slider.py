@@ -6,11 +6,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGroupBox, QHBoxLayout, QSlider
 
 class CustomSlider(QGroupBox):
-    def __init__(self, title, parameter: Parameter, interpolator: str = 'lin', interpolator_order: float = 50, input_width: int = 80):
+    def __init__(self, title, parameter: Parameter, interpolator_type: str = 'lin', interpolator_order: float = 50, input_width: int = 80):
         super().__init__()
 
         # Initializing attributes
-        self.interpolator = ParameterInterpolator(parameter, interpolator, interpolator_order)
+        self.interpolator_type = interpolator_type
+        self.interpolator_order = interpolator_order
         self.callback = Callback() # CustomRange and CustomSlider do not pass the value on callback. This has to be read from CustomRange.range or CustomSlider.parameter.
 
         # Layout
@@ -31,23 +32,31 @@ class CustomSlider(QGroupBox):
         
         self.layout.addWidget(self.input)
 
+        # Update parameter, interpolator and UI elements.
+        self.set_parameter(parameter)
+
     def connect(self, callback):
         self.callback.register(callback)
 
     def set_parameter(self, parameter):
-        self.p = parameter
+        self.parameter = parameter
+        self.interpolator = ParameterInterpolator(parameter, self.interpolator_type, self.interpolator_order)
 
-        value = self.p.get()
+        value = self.parameter.get()
         slider_value = self.interpolator.to_slider(value)
+        slider_max = self.interpolator.slider_max()
+
+        self.slider.setMaximum(slider_max)
         self.slider.setValue(slider_value)
+        self._set_input_text(value)
 
     def _set_input_text(self, value):
-        input_text = self.p.format(value)
+        input_text = self.parameter.format(value)
         self.input.setText(input_text)
 
     def _on_slider_change(self, value):
         value = self.interpolator.from_slider(value) # Convert from slider space.
-        value = self.p.set(value) # Set value and return resulting value which might be 
+        value = self.parameter.set(value) # Set value and return resulting value which might be 
         
         self._set_input_text(value)
 

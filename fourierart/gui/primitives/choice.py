@@ -1,4 +1,4 @@
-from queue import Queue
+from collections import deque as Queue
 
 class Choice:
     def __init__(self, choices: dict, history_length: int = 3):
@@ -7,7 +7,7 @@ class Choice:
         self.choice_key = self.keys[0]
         self.choice_val = self.vals[0]
         self.history_length = history_length
-        self.history = Queue(history_length)
+        self.history = Queue(maxlen=history_length)
 
     def set_choices(self, choices: dict):
         self.choices = choices
@@ -26,7 +26,7 @@ class Choice:
 
     def set(self, key: str):
         if key in self.keys:
-            self.history.put((self.key, self.val))
+            self.history.append((self.choice_key, self.choice_val))
             self.choice_key = key
             self.choice_val = self.choices[key]
 

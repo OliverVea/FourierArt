@@ -18,7 +18,7 @@ class Spectrogram(CustomTab):
         self.graph_layout.addWidget(self.plot)
 
         # Frequency slider
-        self.frequency_slider = CustomRange('Frequency Band', self.parameters['frequency'], interpolator='log')
+        self.frequency_slider = CustomRange('Frequency Band', self.parameters['frequency'], interpolator_type='log')
 
     def set_audio_segment(self, audio_file):
         if self.audio_file == None or audio_file.path != self.audio_file.path or audio_file.t != self.audio_file.t:

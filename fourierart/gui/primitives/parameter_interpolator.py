@@ -15,15 +15,15 @@ class ParameterInterpolator():
         interpolators = {'lin': (self.lin, self.lin), 'exp': (self.exp, self.log), 'log': (self.log, self.exp)}
         self.forward, self.backward = interpolators[interpolator]
 
-    def _slider_max(self):
+    def slider_max(self):
         return (self.p.max - self.p.min) / self.p.step
 
     def from_slider(self, v: float):
-        v = self.forward(v / self._slider_max())
+        v = self.forward(v / self.slider_max())
         return  v * (self.p.max - self.p.min) + self.p.min
 
     def to_slider(self, v: float):
         v = self.backward((v - self.p.min) / (self.p.max - self.p.min))
         v = np.clip(v, 0, 1)
 
-        return v * self._slider_max()
+        return v * self.slider_max()

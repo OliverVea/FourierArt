@@ -8,8 +8,8 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 
 class WaveformPlot(FigureCanvasQTAgg):
-    def __init__(self, parent=None, width=5, height=4, dpi=100, n_bars=1000):
-        fig = Figure(figsize=(width, height), dpi=dpi, edgecolor=PlotProperties.primary_color, facecolor=PlotProperties.background_color)
+    def __init__(self, n_bars=1000):
+        fig = Figure(edgecolor=PlotProperties.primary_color, facecolor=PlotProperties.background_color)
         self.axes = fig.add_subplot(111, facecolor=PlotProperties.background_color)
         self.axes.tick_params(axis='x', colors=PlotProperties.primary_color)
         self.axes.tick_params(axis='y', colors=PlotProperties.primary_color)
@@ -41,7 +41,7 @@ class WaveformPlot(FigureCanvasQTAgg):
         fig.tight_layout()
         super(WaveformPlot, self).__init__(fig)
 
-    def set_data(self, audio_file, gain: float = 1, time_step: float = 0.02, normalization: str = 'max', bar_method = np.max, spline_points: int = 1000): 
+    def set_data(self, audio_file, gain, time_step, normalization, bar_method, spline_points: int = 1000): 
         audio = audio_file.as_array(normalization=normalization)
         audio = np.abs(audio)
         audio = np.multiply(audio, gain)
