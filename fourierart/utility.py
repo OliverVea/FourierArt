@@ -40,8 +40,8 @@ def get_dark_palette():
     palette.setColor(QPalette.HighlightedText, Qt.black)
     return palette
     
-def get_file_name(caller):
-    return QFileDialog.getOpenFileName(caller, 'Single File', QDir.rootPath() , '*.wav')[0]
+def get_file_name():
+    return QFileDialog.getOpenFileName(None, 'Single File', QDir.rootPath() , '*.wav')[0]
 
 def slice_array(arr, start, end):
     n = len(arr)

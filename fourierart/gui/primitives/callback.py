@@ -1,6 +1,6 @@
 class Callback():
-    def __init__(self, callbacks: set = set()):
-        self.callbacks = callbacks
+    def __init__(self, callbacks: set = None):
+        self.callbacks = callbacks if callbacks else set()
 
     def register(self, callback):
         self.callbacks.add(callback)

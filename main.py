@@ -1,4 +1,3 @@
-from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget
 
 from fourierart.utility import get_dark_palette
@@ -31,7 +30,7 @@ class MainContents(QTabWidget):
         self.setTabVisible(tab, True)
 
     def init(self):
-        self.select_source = AudioSource(enable_tab=lambda: self.enable_tab(1))
+        self.select_source = AudioSource(completion_callback=lambda: self.enable_tab(1))
         self.addTab(self.select_source, 'Select Source')
 
         self.quantization = Quantization(completion_callback=lambda: self.enable_tab(2))

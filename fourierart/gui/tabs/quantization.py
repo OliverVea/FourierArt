@@ -1,12 +1,11 @@
 from fourierart.gui.primitives.callback import Callback
-from fourierart import Parameter, Choice, Nop, db_to_lin
+from fourierart import Parameter, Choice, db_to_lin
 from fourierart.gui.components import CustomSlider, CustomChoice, CustomTab
 from fourierart.gui.plots.quantization import QuantizationPlot
 
 import numpy as np
 
 class Quantization(CustomTab):
-
     def __init__(self, completion_callback: Callback = Callback(), time_step_min: float = 0.001, time_step_default: float = 0.02):
         super().__init__(completion_callback=completion_callback)
 

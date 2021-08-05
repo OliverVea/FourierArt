@@ -44,6 +44,11 @@ class AudioFile:
     def get_zoom_index(self, zoom_level, min_px = 1500):
         return max(0, int(np.log2(zoom_level * self.n / min_px)))
 
+    def get_segment(self, start: float = 0.0, end: float = 1.0):
+        a, b = int(self.t * 1000 * start), int(self.t * 1000 * end)
+        
+        return self.audio_segment[a:b]
+
     def get_amplitudes(self, 
         start: float = 0.0, 
         end: float = 1.0, 
