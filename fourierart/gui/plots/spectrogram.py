@@ -1,4 +1,4 @@
-from fourierart import WindowFunction, get_spectrogram
+from fourierart import ApplicationSettings, WindowFunction, get_spectrogram
 from fourierart.gui.plots import PlotProperties
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -22,44 +22,43 @@ class SpectrogramPlot(FigureCanvasQTAgg):
         self.axes.spines['right'].set_visible(False)
         self.axes.spines['top'].set_visible(False)
 
-        self.cmap = plt.get_cmap('plasma')
+        self.cmap = plt.get_cmap(ApplicationSettings.sg_cmap_name)
 
         fig.tight_layout()
         super(SpectrogramPlot, self).__init__(fig)
 
-        self.audio_segment = None
+        self.audio_file = None
 
-    def on_update(self, audio_segment, 
-            freq_min: float = 20, 
-            freq_max: float = 8000, 
-            norm: str = 'none', 
-            freq_window_size: int = 1024, 
-            freq_step_size: int = 32, 
-            window_function: int = WindowFunction.Hanning):
+    def on_update(self, audio_file, 
+            freq_min: float = ApplicationSettings.sg_default_f_min, 
+            freq_max: float = ApplicationSettings.sg_default_f_max, 
+            norm: str = ApplicationSettings.sg_default_norm, 
+            window_size: int = ApplicationSettings.sg_default_window_size, 
+            step_size: int = ApplicationSettings.sg_default_step_size, 
+            window_function: int = ApplicationSettings.sg_default_window_function):
 
-        if not self.audio_segment or self.audio_segment.dBFS != audio_segment.dBFS or self.audio_segment.duration_seconds != audio_segment.duration_seconds:
-            self.audio_segment = audio_segment
+        if self.audio_file != audio_file:
+            self.audio_file = audio_file
 
             self.update_spectrogram(
-                audio_segment,
-                freq_window_size = freq_window_size, 
-                freq_step_size   = freq_step_size,
-                window_function  = window_function
+                audio_file,
+                window_size     = window_size, 
+                step_size       = step_size,
+                window_function = window_function
             )
             
         self.redraw(
-            duration = audio_segment.duration_seconds,
-            fs       = audio_segment.frame_rate,
+            duration = audio_file.t,
+            fs       = audio_file.fs,
             freq_min = freq_min,
             freq_max = freq_max,
             norm     = norm
         )
 
-    def update_spectrogram(self, audio_segment, freq_window_size: int, freq_step_size: int, window_function: int):
-        audio = np.array(audio_segment.get_array_of_samples())
-        audio = np.divide(audio, np.max(audio))
+    def update_spectrogram(self, audio_file, window_size: int, step_size: int, window_function: int):
+        audio = audio_file.get_amplitudes()
 
-        self.spectrogram, *_ = get_spectrogram(audio, freq_window_size, window_function, step_size=freq_step_size)
+        self.spectrogram, *_ = get_spectrogram(audio, window_size, window_function, step_size=step_size)
         self.spectrogram = self.spectrogram.T
 
     def redraw(self, duration, fs, freq_min, freq_max, norm):

@@ -80,10 +80,13 @@ class AudioSource(CustomTab):
 
         self.on_completion()
 
-    def on_click_play(self, state):
+    def get_audio_segment(self):
         start, end = self.read_range_bars()
 
-        audio_segment = self.audio_file.get_segment(start, end)
+        return self.audio_file.get_segment(start, end)
+
+    def on_click_play(self, state):
+        audio_segment = self.get_audio_segment()
 
         audio_segment = audio_segment.set_frame_rate(44100)
         audio_segment = audio_segment.set_sample_width(2)

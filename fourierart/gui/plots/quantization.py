@@ -14,7 +14,11 @@ class QuantizationPlot(AmplitudePlot):
         self.bars = self.axes.bar([0 for i in range(n_bars)], [0 for i in range(n_bars)], color=PlotProperties.accent_color, zorder=-2)
 
     def set_data(self, audio_file, gain, time_step, normalization, bar_method, spline_points: int = 1000): 
-        audio = audio_file.get_amplitudes(normalization=normalization, gain=gain, clip=True, abs=True)
+        audio = audio_file.get_amplitudes(
+            normalization=normalization,
+            gain=gain, 
+            clip=True, 
+            abs=True)
 
         bin_time = [i * time_step for i in range(int(audio_file.t / time_step))]
         bin_slices = [(int(t * audio_file.fs), int((t + time_step) * audio_file.fs)) for t in bin_time]

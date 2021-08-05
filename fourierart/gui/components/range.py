@@ -3,7 +3,7 @@ from fourierart import Range, ParameterInterpolator, Nop
 from fourierart.gui.components.field import CustomField
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGroupBox, QHBoxLayout
+from PyQt5.QtWidgets import QGroupBox, QVBoxLayout
 from qtrangeslider import QRangeSlider
 
 class CustomRange(QGroupBox):
@@ -17,8 +17,15 @@ class CustomRange(QGroupBox):
 
         # Layout
         self.setTitle(title)
-        self.layout = QHBoxLayout()
+        self.layout = QVBoxLayout()
         self.setLayout(self.layout)
+
+        # Input field
+        self.input_upper = CustomField('')
+        self.input_upper.setFixedWidth(input_width)
+        self.input_upper.returnPressed.connect(self._on_input_upper_change)
+        
+        self.layout.addWidget(self.input_upper)
 
         # Slider
         self.slider = QRangeSlider(Qt.Vertical) # TODO: Implement Horizontal.
@@ -27,11 +34,11 @@ class CustomRange(QGroupBox):
         self.layout.addWidget(self.slider)
 
         # Input field
-        self.input = CustomField('')
-        self.input.setFixedWidth(input_width)
-        self.input.returnPressed.connect(self._on_input_change)
+        self.input_lower = CustomField('')
+        self.input_lower.setFixedWidth(input_width)
+        self.input_lower.returnPressed.connect(self._on_input_lower_change)
         
-        self.layout.addWidget(self.input)
+        self.layout.addWidget(self.input_lower)
 
         # Update range, interpolator and UI elements.
         self.set_range(range)
@@ -48,7 +55,12 @@ class CustomRange(QGroupBox):
 
         self.callback()
 
-    def _on_input_change(self):
+    def _on_input_upper_change(self):
+        print(Exception('Not implemented.'))
+
+        self.callback()
+
+    def _on_input_lower_change(self):
         print(Exception('Not implemented.'))
 
         self.callback()

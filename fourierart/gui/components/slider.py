@@ -66,10 +66,10 @@ class CustomSlider(QGroupBox):
         value = to_float(self.input.text())
 
         if value: # If valid value was entered.
-            value = self.p.set(value)
+            value = self.parameter.set(value)
             slider_value = self.interpolator.to_slider(value)
             self.slider.setValue(slider_value)
             self.callback()
 
-        self._set_input_text(self.p.get())
+        self._set_input_text(self.parameter.get())
         self.input.clearFocus()
