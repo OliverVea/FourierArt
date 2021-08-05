@@ -4,8 +4,18 @@ from PyQt5.QtWidgets import QFileDialog
 
 import numpy as np
 
+# No operation function
+def Nop(*args, **kwargs):
+    pass
+
+# Lambda no operation function
+Lop = lambda *args, **kwargs: None 
+
 def db_to_lin(db):
     return pow(10, (db / 20))
+
+def lin_to_db(lin):
+    return 20 * np.log10(lin)
 
 def get_dark_palette():
     palette = QPalette()
@@ -27,7 +37,7 @@ def get_dark_palette():
 def get_file_name(caller):
     return QFileDialog.getOpenFileName(caller, 'Single File', QDir.rootPath() , '*.wav')[0]
 
-def slice_array(arr, start, end, downsample = 1.0):
+def slice_array(arr, start, end):
     n = len(arr)
     start, end = int(start*n), int(end*n)
 
