@@ -1,3 +1,5 @@
+import numpy as np
+
 class Parameter:
     def __init__(self, min: float, max: float, value, step: float, hard_min: bool = True, hard_max: bool = False, format: str = lambda v: f'{v}'):
         self.min = min
@@ -12,10 +14,9 @@ class Parameter:
         return self.value
 
     def set(self, value: float):
-        if self.hard_min:
-            value = max(value, self.min)
+        min = self.min if self.hard_min else None
+        max = self.max if self.hard_max else None
 
-        if self.hard_max:
-            value = min(value, self.max)
+        self.value = np.clip(value, min, max)
 
-        self.value = value
+        return self.value

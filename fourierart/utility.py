@@ -17,6 +17,12 @@ def db_to_lin(db):
 def lin_to_db(lin):
     return 20 * np.log10(lin)
 
+def to_float(f: float):
+    try:
+        return float(f)
+    except:
+        return None
+
 def get_dark_palette():
     palette = QPalette()
     palette.setColor(QPalette.Window, QColor(53, 53, 53))

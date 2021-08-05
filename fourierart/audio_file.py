@@ -37,6 +37,14 @@ class AudioFile:
         # TODO: Make load screen
         self.audio = [ self.audio ] + [self.downsample(self.audio, int(self.n / pow(2, i + 1))) for i in range(self.zoom_levels - 1)]
 
+    def __ne__(self, other):
+        # TODO
+        return True
+
+    def __eq__(self, other):
+        # TODO
+        return False
+
     def downsample(self, arr, num, method: str = 'set_frame_rate'):
         if len(arr) > 1e5:
             indeces = np.linspace(0, len(arr) - 1, num, dtype=np.int32)

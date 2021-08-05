@@ -14,8 +14,15 @@ class Choice:
         self.keys = list(choices.keys())
         self.vals = list(choices.values())
 
-    def get(self):
-        pass
+    def get(self, return_key: bool = False, return_value: bool = True):
+        if return_key and return_value:
+            return (self.choice_key, self.choice_val)
+
+        if return_key:
+            return self.choice_key
+
+        if return_value:
+            return self.choice_val
 
     def set(self, key: str):
         if key in self.keys:

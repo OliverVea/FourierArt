@@ -3,7 +3,7 @@ from fourierart.gui.primitives import Choice
 
 from PyQt5.QtWidgets import QComboBox, QGroupBox, QHBoxLayout
 
-class OptionChoice(QGroupBox):
+class CustomChoice(QGroupBox):
     def __init__(self, title, choice: Choice, callback=Nop):
         super().__init__()
 
