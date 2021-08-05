@@ -1,7 +1,5 @@
 import numpy as np
 
-Nop = lambda *x:x
-
 class Parameter:
     def __init__(self, min, max, value, step, hard_min: bool = True, hard_max: bool = False, format = lambda v: f'{v}'):
         self.min = min
