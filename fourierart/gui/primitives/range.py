@@ -2,11 +2,11 @@ from fourierart.gui.primitives.parameter import Parameter
 
 class Range(Parameter):
     def set(self, value: tuple):
-        for i, v in enumerate(value):
-            if self.hard_min:
-                value[i] = max(v, self.min)
+        lower, upper = value
 
-            if self.hard_max:
-                value[i] = min(v, self.max)
+        lower = max(lower, self.min) if self.hard_min else lower
+        upper = min(upper, self.max) if self.hard_max else upper
                 
-        self.value = value
+        self.value = (lower, upper)
+
+        return self.value

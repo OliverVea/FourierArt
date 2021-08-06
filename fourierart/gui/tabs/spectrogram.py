@@ -1,3 +1,4 @@
+from fourierart.gui.primitives.range import Range
 from fourierart import Parameter, ApplicationSettings
 from fourierart.gui.components import CustomTab, CustomRange
 from fourierart.gui.plots.spectrogram import SpectrogramPlot
@@ -8,7 +9,7 @@ class Spectrogram(CustomTab):
         
         self.audio_file = None
         self.parameters = {
-            'frequency': Parameter(min=0, max=1, value=(0,1), step=1, hard_min=True, hard_max=True, format=lambda v: f'{v[0]:.1f} Hz'),
+            'frequency': Range(min=0, max=1, value=(0, 1), step=1, hard_min=True, hard_max=True, format=lambda v: f'{v:.1f} Hz'),
         }
 
         # Plot
@@ -16,7 +17,7 @@ class Spectrogram(CustomTab):
         self.graph_layout.addWidget(self.plot)
 
         # Frequency slider
-        self.frequency_slider = CustomRange('Frequency Band', self.parameters['frequency'], interpolator_type='log')
+        self.frequency_slider = CustomRange('Frequency Band', self.parameters['frequency'], interpolator_type='exp')
         self.options_layout.addWidget(self.frequency_slider, 0, 0)
 
     def set_audio_file(self, audio_file):

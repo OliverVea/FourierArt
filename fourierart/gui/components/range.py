@@ -1,13 +1,14 @@
+from fourierart.utility import to_float
 from fourierart.gui.primitives.callback import Callback
 from fourierart import Range, ParameterInterpolator, Nop
 from fourierart.gui.components.field import CustomField
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGroupBox, QVBoxLayout
+from PyQt5.QtWidgets import QGroupBox, QHBoxLayout, QSizePolicy, QSpacerItem, QVBoxLayout
 from qtrangeslider import QRangeSlider
 
 class CustomRange(QGroupBox):
-    def __init__(self, title, range: Range, interpolator_type: str = 'lin', interpolator_order: float = 50, input_width: int = 80):
+    def __init__(self, title, range: Range, interpolator_type: str = 'lin', interpolator_order: float = 50, field_width: int = 80):
         super().__init__()
 
         # Initializing attributes
@@ -17,15 +18,8 @@ class CustomRange(QGroupBox):
 
         # Layout
         self.setTitle(title)
-        self.layout = QVBoxLayout()
+        self.layout = QHBoxLayout()
         self.setLayout(self.layout)
-
-        # Input field
-        self.input_upper = CustomField('')
-        self.input_upper.setFixedWidth(input_width)
-        self.input_upper.returnPressed.connect(self._on_input_upper_change)
-        
-        self.layout.addWidget(self.input_upper)
 
         # Slider
         self.slider = QRangeSlider(Qt.Vertical) # TODO: Implement Horizontal.
@@ -33,12 +27,26 @@ class CustomRange(QGroupBox):
 
         self.layout.addWidget(self.slider)
 
-        # Input field
-        self.input_lower = CustomField('')
-        self.input_lower.setFixedWidth(input_width)
-        self.input_lower.returnPressed.connect(self._on_input_lower_change)
+        # Field layout
+        self.field_layout = QVBoxLayout()
+        self.field_layout.expandingDirections()
+        self.layout.addLayout(self.field_layout)
+        self.spacer = QSpacerItem(0, 0, QSizePolicy.Expanding)
+        self.layout.addSpacerItem(self.spacer)
+
+        # Upper field
+        self.field_upper = CustomField('')
+        self.field_upper.setFixedWidth(field_width)
+        self.field_upper.returnPressed.connect(self._on_field_upper_change)
         
-        self.layout.addWidget(self.input_lower)
+        self.field_layout.addWidget(self.field_upper, alignment=Qt.AlignmentFlag.AlignTop)
+
+        # Lower field
+        self.field_lower = CustomField('')
+        self.field_lower.setFixedWidth(field_width)
+        self.field_lower.returnPressed.connect(self._on_field_lower_change)
+        
+        self.field_layout.addWidget(self.field_lower, alignment=Qt.AlignmentFlag.AlignBottom)
 
         # Update range, interpolator and UI elements.
         self.set_range(range)
@@ -47,20 +55,57 @@ class CustomRange(QGroupBox):
         self.range = range
         self.interpolator = ParameterInterpolator(range, self.interpolator_type, self.interpolator_order)
 
-        # TODO: Update UI elements
-        print(Exception('UI not updated!'))
+        value = self.range.get()
+        max_slider_value = self.interpolator.slider_max()
+        lower_slider_value = self.interpolator.to_slider(value[0])
+        upper_slider_value = self.interpolator.to_slider(value[1])
 
-    def _on_slider_change(self, value):
-        print(Exception('Not implemented.'))
+        self.slider.setMaximum(max_slider_value)
+        self.slider.setValue((lower_slider_value, upper_slider_value))
+
+        self._set_field_text(value)
+
+    def _set_field_text(self, value: tuple):
+        field_lower_text = self.range.format(value[0])
+        field_upper_text = self.range.format(value[1])
+
+        self.field_lower.setText(field_lower_text)
+        self.field_upper.setText(field_upper_text)
+
+    def _on_slider_change(self, slider_value):
+        value = tuple(self.interpolator.from_slider(v) for v in slider_value)
+        value = self.range.set(value)
+
+        self._set_field_text(value)
 
         self.callback()
 
-    def _on_input_upper_change(self):
-        print(Exception('Not implemented.'))
+    def _on_field_upper_change(self):
+        value = to_float(self.field_upper.text())
 
-        self.callback()
+        if not value is None and value > self.range.get()[0]: # If valid value was entered - apparently 0.0 is false, so value has to be compared to none.        
+            range = (self.range.get()[0], value)
+            range = self.range.set(range)
 
-    def _on_input_lower_change(self):
-        print(Exception('Not implemented.'))
+            slider_value = self.interpolator.to_slider(range[1])
+            self.slider.setValue((self.slider.value()[0], slider_value))
 
-        self.callback()
+            self.callback()
+
+        self._set_field_text(self.range.get())
+        self.field_upper.clearFocus()
+
+    def _on_field_lower_change(self):
+        value = to_float(self.field_lower.text())
+
+        if not value is None and value < self.range.get()[1]: # If valid value was entered - apparently 0.0 is false, so value has to be compared to none.        
+            range = (value, self.range.get()[1])
+            range = self.range.set(range)
+
+            slider_value = self.interpolator.to_slider(range[0])
+            self.slider.setValue((slider_value, self.slider.value()[1]))
+            
+            self.callback()
+
+        self._set_field_text(self.range.get())
+        self.field_lower.clearFocus()

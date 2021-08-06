@@ -1,3 +1,4 @@
+from fourierart.audio.processing import WindowFunction
 from fourierart.utility import time_func
 from fourierart import ApplicationSettings, Parameter, Choice, db_to_lin
 from fourierart.gui.primitives.callback import Callback
@@ -38,7 +39,14 @@ class Quantization(CustomTab):
 
             'normalization': Choice({'Max': 'max', 'Peak': 'peak'}),
 
-            'bar_method': Choice({'Max': np.max, 'Min': np.min, 'Average': np.average, 'Median': np.median}),
+            'bar_method': Choice({
+                'Max': np.max, 
+                'Min': np.min, 
+                'Average': np.average, 
+                'Median': np.median, 
+                #'Blackman': lambda d: np.average(WindowFunction.apply_window(d, WindowFunction.Blackman)),
+                #'Hanning': lambda d: np.average(WindowFunction.apply_window(d, WindowFunction.Hanning)),
+            }),
         }
 
         self.plot = QuantizationPlot()
