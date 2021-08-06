@@ -35,9 +35,16 @@ class ApplicationSettings:
     sg_default_f_max = 8000
     sg_frequency_slider_steps = 1000
 
-    sg_default_norm = 'none'
-    sg_default_window_size = 1024
-    sg_default_step_size = 64
+    sg_window_size_min = 128
+    sg_window_size_max = 16384
+    sg_window_size_default = 1024
+    sg_window_size_steps = 1000
+
+    sg_step_size_min = 16
+    sg_step_size_max = 4096
+    sg_step_size_default = 64
+    sg_step_size_steps = 1000
+
     sg_default_window_function = WindowFunction.Hanning
 
 class Palette:

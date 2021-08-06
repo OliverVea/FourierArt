@@ -7,15 +7,30 @@ from scipy.signal.signaltools import resample
 
 class WindowFunction:
     Blackman = 1
-    Hanning = 1
+    Hanning = 2
+    Bartlett = 3
+    Hamming = 4
+    Kaiser = 5
 
     @staticmethod
     def get_window_function(window_function):
+        if window_function == None:
+            return np.array
+
         if window_function == WindowFunction.Blackman:
             return np.blackman
 
         if window_function == WindowFunction.Hanning:
             return np.hanning
+
+        if window_function == WindowFunction.Bartlett:
+            return np.bartlett
+
+        if window_function == WindowFunction.Hamming:
+            return np.hamming
+
+        if window_function == WindowFunction.Kaiser:
+            return lambda x: np.kaiser(x, 2)
 
     @staticmethod
     def apply_window(data, window_function):

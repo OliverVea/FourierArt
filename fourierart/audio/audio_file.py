@@ -32,11 +32,13 @@ class AudioFile:
         self.audio += [downsample(self.audio_segment.set_channels(1), size) for size in downsampled_sizes]
 
     def __ne__(self, other):
+        return not self is other
         print('Bad __ne__ used in audio_file')
         # TODO
         return True
 
     def __eq__(self, other):
+        return self is other
         print('Bad __eq__ used in audio_file')
         # TODO
         return False

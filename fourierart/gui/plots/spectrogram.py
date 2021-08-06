@@ -14,10 +14,7 @@ class SpectrogramPlot(FigureCanvasQTAgg):
         self.axes.tick_params(axis='y', colors=PlotProperties.primary_color)
 
         self.axes.spines['left'].set_visible(True)
-
         self.axes.spines['bottom'].set_visible(True)
-        self.axes.spines['bottom'].set_position('zero')
-
         self.axes.spines['right'].set_visible(False)
         self.axes.spines['top'].set_visible(False)
 
@@ -27,17 +24,23 @@ class SpectrogramPlot(FigureCanvasQTAgg):
         super(SpectrogramPlot, self).__init__(fig)
 
         self.audio_file = None
+        self.img = None
+        self.window_function = None
+        self.step_size = None
+        self.window_size = None
 
-    def on_update(self, audio_file, 
-            freq_min: float = ApplicationSettings.sg_default_f_min, 
-            freq_max: float = ApplicationSettings.sg_default_f_max, 
-            norm: str = ApplicationSettings.sg_default_norm, 
-            window_size: int = ApplicationSettings.sg_default_window_size, 
-            step_size: int = ApplicationSettings.sg_default_step_size, 
-            window_function: int = ApplicationSettings.sg_default_window_function):
+    def on_update(self, audio_file, freq_min, freq_max, norm, 
+            window_size, step_size, window_function, interpolation):
+            
+        if (self.audio_file != audio_file 
+            or window_size != self.window_size 
+            or self.step_size != step_size 
+            or self.window_function != window_function):
 
-        if self.audio_file != audio_file:
             self.audio_file = audio_file
+            self.window_size = window_size
+            self.step_size = step_size
+            self.window_function = window_function
 
             self.update_spectrogram(
                 audio_file,
@@ -47,11 +50,12 @@ class SpectrogramPlot(FigureCanvasQTAgg):
             )
             
         self.redraw(
-            duration = audio_file.t,
-            fs       = audio_file.fs,
-            freq_min = freq_min,
-            freq_max = freq_max,
-            norm     = norm
+            duration      = audio_file.t,
+            fs            = audio_file.fs,
+            freq_min      = freq_min,
+            freq_max      = freq_max,
+            norm          = norm,
+            interpolation = interpolation
         )
 
     def update_spectrogram(self, audio_file, window_size: int, step_size: int, window_function: int):
@@ -60,38 +64,34 @@ class SpectrogramPlot(FigureCanvasQTAgg):
         self.spectrogram, *_ = get_spectrogram(audio, window_size, window_function, step_size=step_size)
         self.spectrogram = self.spectrogram.T
 
-    def redraw(self, duration, fs, freq_min, freq_max, norm):
+    def redraw(self, duration, fs, freq_min, freq_max, norm, interpolation):
         w = duration
         h = fs / 2
 
         y0, y1 = freq_min / h, freq_max / h 
-        y0_rasterized = int(y0 * self.spectrogram.shape[1])
-        y1_rasterized = int(np.ceil(y1 * self.spectrogram.shape[1]))
+        y0_rasterized = int(y0 * self.spectrogram.shape[0])
+        y1_rasterized = int(np.ceil(y1 * self.spectrogram.shape[0]))
 
-        y0 = h * y0_rasterized / self.spectrogram.shape[1]
-        y1 = h * y1_rasterized / self.spectrogram.shape[1]
+        y0 = h * y0_rasterized / self.spectrogram.shape[0]
+        y1 = h * y1_rasterized / self.spectrogram.shape[0]
 
-        spectrogram = self.spectrogram[:,y0_rasterized:y1_rasterized]
+        spectrogram = self.spectrogram[y0_rasterized:y1_rasterized:]
 
         self.axes.set_xlim(0, w)
         self.axes.set_ylim(y0, y1)
 
-        if norm == 'log':
-            norm = LogNorm()
+        norm = LogNorm() if norm == 'log' else None
 
-        else:
-            norm = None
+        extent = [0, w, y1, y0]
 
-        extent = [
-            0, w, 
-            y1, y0
-        ]
+        if self.img:
+            self.img.remove()
 
-        self.axes.imshow(
+        self.img = self.axes.imshow(
             spectrogram, 
             cmap=self.cmap, 
             norm=norm, 
-            interpolation='none', 
+            interpolation=interpolation, 
             extent=extent, 
             aspect='auto'
         )

@@ -20,9 +20,11 @@ class CustomRange(QGroupBox):
         self.setTitle(title)
         self.layout = QHBoxLayout()
         self.setLayout(self.layout)
+        self.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Expanding)
 
         # Slider
         self.slider = QRangeSlider(Qt.Vertical) # TODO: Implement Horizontal.
+        self.slider.setMinimumHeight(140)
         self.slider.sliderMoved.connect(self._on_slider_change)
 
         self.layout.addWidget(self.slider)
@@ -31,8 +33,6 @@ class CustomRange(QGroupBox):
         self.field_layout = QVBoxLayout()
         self.field_layout.expandingDirections()
         self.layout.addLayout(self.field_layout)
-        self.spacer = QSpacerItem(0, 0, QSizePolicy.Expanding)
-        self.layout.addSpacerItem(self.spacer)
 
         # Upper field
         self.field_upper = CustomField('')
@@ -50,6 +50,9 @@ class CustomRange(QGroupBox):
 
         # Update range, interpolator and UI elements.
         self.set_range(range)
+
+    def connect(self, callback):
+        self.callback.register(callback)
 
     def set_range(self, range):
         self.range = range
