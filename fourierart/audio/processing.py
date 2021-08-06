@@ -112,7 +112,7 @@ def get_spectrogram(audio, window_width, window_function: int = None, step_size:
 
     return np.array(spectrogram), x, y
 
-def downsample(audio_segment: AudioSegment, num, method: str = 'resample', resample_threshold: int = 1e5):
+def downsample(audio_segment: AudioSegment, num, method: str = 'set_frame_rate', resample_threshold: int = 1e5):
     arr = np.array(audio_segment.get_array_of_samples())
 
     if len(arr) > resample_threshold:

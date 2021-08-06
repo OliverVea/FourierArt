@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, QDir
 from PyQt5.QtWidgets import QFileDialog
 
 import numpy as np
+import time
 
 # No operation function
 def Nop(*args, **kwargs):
@@ -31,3 +32,17 @@ def slice_array(arr, start, end):
     start, end = int(start*n), int(end*n)
 
     return arr[start:end]
+
+def time_func(func, *args, print_format_func = None, **kwargs):
+    a = time.time()
+
+    ret = func(*args, **kwargs)
+
+    t = time.time() - a
+
+    if not print_format_func:
+        print_format_func = lambda t: f'{func.__name__} -> {t}s'
+    
+    print(print_format_func(t))
+
+    return ret
