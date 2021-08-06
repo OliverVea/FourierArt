@@ -1,3 +1,4 @@
+from fourierart.utility import time_func
 from fourierart import ApplicationSettings, Parameter, Choice, db_to_lin
 from fourierart.gui.primitives.callback import Callback
 from fourierart.gui.components import CustomSlider, CustomChoice, CustomTab
@@ -7,8 +8,7 @@ import numpy as np
 
 class Quantization(CustomTab):
     def __init__(self, 
-            completion_callback: Callback = Callback(), 
-            time_step_min: float = ApplicationSettings.qu_time_step_min):
+            completion_callback: Callback = Callback()):
 
         super().__init__(completion_callback=completion_callback)
 
@@ -27,7 +27,7 @@ class Quantization(CustomTab):
             ),
 
             'time_step': Parameter(
-                min=time_step_min, 
+                min=0, 
                 max=1, 
                 value=0, 
                 step=1, 
@@ -65,12 +65,14 @@ class Quantization(CustomTab):
         if self.audio_file != audio_file:
             self.audio_file = audio_file
 
-            min_bars = ApplicationSettings.qu_min_bars
             slider_steps = ApplicationSettings.qu_time_step_slider_steps
-            time_step_value = ApplicationSettings.qu_time_step_default
-            time_step_min = ApplicationSettings.qu_time_step_min
-            time_step_max = audio_file.t / min_bars
+            time_step_min = audio_file.t / (ApplicationSettings.qu_max_bars + 1)
+            time_step_max = audio_file.t / (ApplicationSettings.qu_min_bars + 1)
 
+            time_step_value = ApplicationSettings.qu_time_step_default
+            time_step_value = np.clip(time_step_value, time_step_min, time_step_max)
+
+            self.parameters['time_step'].min = time_step_min
             self.parameters['time_step'].max = time_step_max
             self.parameters['time_step'].step = (time_step_max - time_step_min) / slider_steps 
             self.parameters['time_step'].set(time_step_value)
@@ -80,7 +82,7 @@ class Quantization(CustomTab):
         self.update_graph()
 
     def update_graph(self):
-        self.spline = self.plot.set_data(
+        self.spline = time_func(self.plot.set_data, 
             audio_file = self.audio_file,
             gain = db_to_lin(self.parameters['gain'].get()),
             time_step = self.parameters['time_step'].get(),

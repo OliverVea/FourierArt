@@ -65,7 +65,7 @@ class CustomSlider(QGroupBox):
     def _on_input_change(self):
         value = to_float(self.input.text())
 
-        if value: # If valid value was entered.
+        if not value is None: # If valid value was entered - apparently 0.0 is false, so value has to be compared to none.
             value = self.parameter.set(value)
             slider_value = self.interpolator.to_slider(value)
             self.slider.setValue(slider_value)

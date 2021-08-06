@@ -20,11 +20,13 @@ class ApplicationSettings:
     qu_gain_max: float = 40
     qu_gain_step: float = 0.1
 
-    qu_time_step_min: float = 0.001
     qu_time_step_default: float = 0.02
     qu_time_step_slider_steps: int = 1000
 
     qu_min_bars: int = 5
+    qu_max_bars: int = 1000
+    qu_spline_points: int = 1000
+    qu_bar_width: float = 0.75
 
     # Spectrogram:
     sg_cmap_name = 'plasma'
